@@ -21,7 +21,7 @@ def download_change():
 
 @app.route("/download/marco", methods=["GET"])
 def download_marco():
-    return download_file("marco.csv")
+    return download_file("marco.pdf")
 
 @app.route("/download/ontopsicologia", methods=["GET"])
 def download_ontopsicologia():
