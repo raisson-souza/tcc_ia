@@ -1,0 +1,1 @@
+Projeto do TCC de hospedagem de arquivos de treinamento para bases vetoriais no Pinecone e teste de integração com N8N.
