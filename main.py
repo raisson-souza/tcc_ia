@@ -21,11 +21,6 @@ def download_freud():
 def download_psicanalise():
     return download_file("psicanalise.pdf")
 
-# CHANGE
-@app.route("/download/change", methods=["GET"])
-def download_change():
-    return download_file("change.pdf")
-
 # MARCO
 @app.route("/download/marco", methods=["GET"])
 def download_marco():
