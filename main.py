@@ -11,25 +11,35 @@ def download_file(file_name):
     except FileNotFoundError:
         return {"error": "Arquivo não encontrado."}, 404
 
-@app.route("/download/psicanalise", methods=["GET"])
+# A INTERPRETAÇÃO DOS SONHOS
+@app.route("/download/sonhos", methods=["GET"])
 def download_freud():
     return download_file("freud.pdf")
 
+# PSICANÁLISE
+@app.route("/download/psicanalise", methods=["GET"])
+def download_psicanalise():
+    return download_file("psicanalise.pdf")
+
+# CHANGE
 @app.route("/download/change", methods=["GET"])
 def download_change():
     return download_file("change.pdf")
 
+# MARCO
 @app.route("/download/marco", methods=["GET"])
 def download_marco():
     return download_file("marco.pdf")
 
+# ONTOPSICOLOGIA
 @app.route("/download/ontopsicologia", methods=["GET"])
 def download_ontopsicologia():
     return download_file("ontopsicologia.pdf")
 
+# PSICANÁLISE
 @app.route("/download/psicanalise_ontopsicologia", methods=["GET"])
 def download_psicanalise_ontopsicologia():
-    return download_file("psicanalise_ontopsicologia.pdf")
+    return download_file("psicanalise-ontopsicologia.pdf")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
