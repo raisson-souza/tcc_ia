@@ -31,10 +31,10 @@ def download_marco():
 def download_ontopsicologia():
     return download_file("ontopsicologia.pdf")
 
-# PSICANÁLISE
-@app.route("/download/psicanalise_ontopsicologia", methods=["GET"])
-def download_psicanalise_ontopsicologia():
-    return download_file("psicanalise-ontopsicologia.pdf")
+# MISTA
+@app.route("/download/mista", methods=["GET"])
+def download_mista():
+    return download_file("mista.pdf")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
