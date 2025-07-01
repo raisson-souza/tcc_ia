@@ -35,7 +35,7 @@ SYSTEM_PROMPT_PSI_ONT = f"""
     Sua tarefa é interpretar sonhos conforme os critérios psicanalísticos e ontopsicológicos de análise e interpretação de sonhos.
     { SYSTEM_PROMPT_FIRST_ORDER }
     1 - 'Sonho') Resuma o sonho;
-    2 - 'Interpretação') Interprete o sonho misturando os critérios psicanalíticos e ontopsicológicos de interpretação de sonhos, forneça apenas uma interpretação, use seu contexto e criatividade.
+    2 - 'Interpretação') Interprete o sonho misturando os critérios psicanalíticos (Condensação, Deslocamento, Dramatização, Elaboração) e ontopsicológicos (Hierarquia do sonho, Critério Organístico, Natureza causal do símbolo, Efetivação funcional, Critério semântico, Realidade social, Visualização dos instintos, Formalizações semânticas, Pulsões meta-históricas, Ação em mutação, Ambiente, Pessoas, Sentimentos) de interpretação de sonhos, forneça apenas uma interpretação, use seu contexto e criatividade.
     { SYSTEM_PROMPT_CRITERIA_DELIMITER }
     { SYSTEM_PROMPT_USER_DELIMITER }
 """
@@ -44,15 +44,20 @@ USER_PROMPT_DREAM = "Eu estava dirigindo um carro completamente desgovernado, se
 USER_PROMPT_DREAM_CONTEXT = ""
 USER_PROMPT_CONTEXT = "O paciente está sobrecarregado com TCC da faculdade, estuda e trabalha muito, não tem tempo para lazer e está se sentindo ansioso e estressado com a rotina."
 
+USER_PROMPT = f"Sonho do usuário: { USER_PROMPT_DREAM }. Detalhamento do sonho: { USER_PROMPT_DREAM_CONTEXT }. Contexto de vida do usuário: { USER_PROMPT_CONTEXT }"
+
 body = {
-    "ont":    f"{ SYSTEM_PROMPT_ONT }. Sonho do usuário: { USER_PROMPT_DREAM }. Detalhes extras do sonho: { USER_PROMPT_DREAM_CONTEXT }. Contexto de vida do usuário: { USER_PROMPT_CONTEXT }",
-    "psi":    f"{ SYSTEM_PROMPT_PSI }. Sonho do usuário: { USER_PROMPT_DREAM }. Detalhes extras do sonho: { USER_PROMPT_DREAM_CONTEXT }. Contexto de vida do usuário: { USER_PROMPT_CONTEXT }",
-    "ontpsi": f"{ SYSTEM_PROMPT_PSI_ONT }. Sonho do usuário: { USER_PROMPT_DREAM }. Detalhes extras do sonho: { USER_PROMPT_DREAM_CONTEXT }. Contexto de vida do usuário: { USER_PROMPT_CONTEXT }",
+    "user_context": USER_PROMPT,
+    "ont_prompt":    f"{ SYSTEM_PROMPT_ONT }. { USER_PROMPT }",
+    "psi_prompt":    f"{ SYSTEM_PROMPT_PSI }. { USER_PROMPT }",
+    "ontpsi_prompt": f"{ SYSTEM_PROMPT_PSI_ONT }. { USER_PROMPT }",
+    "ont_validator_prompt":    f"Você é uma IA com especialização em ontopsicologia. Sua tarefa é corrigir (se necessário) a interpretação ontopsicológica sobre um sonho de um paciente com base no sonho dele, detalhamento do sonho e contexto de vida do mesmo, se há necessidade de correção, corrija e retorne a interpretação no mesmo formato, se não, apenas retorne a mesma interpretação.",
+    "psi_validator_prompt":   f"Você é uma IA com especialização em psicanálise. Sua tarefa é corrigir (se necessário) a interpretação psicanalítica sobre um sonho de um paciente com base no sonho dele, detalhamento do sonho e contexto de vida do mesmo, se há necessidade de correção, corrija e retorne a interpretação no mesmo formato, se não, apenas retorne a mesma interpretação",
+    "ontpsi_validator_prompt": f"Você é uma IA com especialização em ontopsicologia e psicanálise. Sua tarefa é corrigir (se necessário) a interpretação mista das áreas sobre um sonho de um paciente com base no sonho dele, detalhamento do sonho e contexto de vida do mesmo, se há necessidade de correção, corrija e retorne a interpretação no mesmo formato, se não, apenas retorne a mesma interpretação",
+    "custom_psi_prompt": SYSTEM_PROMPT_PSI,
 }
 
 response = requests.post(url, json=body)
 
-print("Status code:", response.status_code)
-print(f"ONTOPSICOLOGIA: { response.json()[0] }")
-print(f"PSICANÁLISE: { response.json()[1] }")
-print(f"AMBAS: { response.json()[2] }")
+print("Status:", response.status_code)
+print(response.json())
