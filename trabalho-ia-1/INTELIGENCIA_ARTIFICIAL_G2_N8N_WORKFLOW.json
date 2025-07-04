@@ -1,0 +1,1494 @@
+{
+  "name": "G2 IA v2",
+  "nodes": [
+    {
+      "parameters": {
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -1320
+      ],
+      "id": "e97c9e84-4649-4304-b98a-3f4f1615ea21",
+      "name": "Vector Store Retriever9"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "psychoanalysis",
+          "mode": "list",
+          "cachedResultName": "psychoanalysis"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        -1200
+      ],
+      "id": "51f10e3d-e4d2-4169-adc8-9dbe2928ad59",
+      "name": "Pinecone Vector Store9",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hTRAbEMGwK8RruoL",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        460,
+        -1060
+      ],
+      "id": "e7d6bd5c-fbd1-4465-b336-96279aa82e86",
+      "name": "Embeddings Google Gemini9",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é identificar o conteúdo latente do sonho, disserete brevemente sobre a condensação, deslocamento, dramatização e elaboração secundária do relato, listeo-os em tópicos.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER PSICANALISE').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        180,
+        -1580
+      ],
+      "id": "c0bb12f4-57d0-4cda-9056-e684c7431b4f",
+      "name": "CONTEÚDO LATENTE"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá um sonho de um paciente, o contexto de vida do mesmo e uma interpretação parcial de outro psicanalista, seu trabalho é identificar o desejo realizado ou a tentativa de realização do desejo.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER PSICANALISE').item.json.body.user_dream }}\".\n\nContexto do paciente: \"{{ $('TRIGGER PSICANALISE').item.json.body.user_context }}\".\n\nInterpretação parcial: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        520,
+        -1580
+      ],
+      "id": "e45c5a11-6179-4d24-a42b-dce7e2c08cb8",
+      "name": "REALIZAÇÃO DO DESEJO"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é identificar e descrever, com base no sonho, os três príncipios de interpretação de sonhos da ontopsicologia, determine e disserte sobre a \"natureza causal do símbolo\", \"efetivação funcional para o sujeiro\" e \"critério semântico\".\nNão utilize tópicos em sua resposta, apenas texto corrido.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\n\nSonho do paciente: \"{{ $('RESUMO DO SONHO (ONTOPSICOLOGIA)').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        460,
+        -2300
+      ],
+      "id": "73c8eef2-3512-4b3f-ba36-40c1ff19fc3f",
+      "name": "PRÍNCIPIOS DE INTERPRETAÇÃO"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo e duas interpretações parciais realizadas por outros especialistas, seu objetivo é determinar e dissertar sobre os quatros aspectos a serem lidos da cena onírica (ação em mutação, ambiente, pessoas ou indivíduos e sentimentos) com base no sonhos fornecido principalmente.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('RESUMO DO SONHO (ONTOPSICOLOGIA)').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1100,
+        -2300
+      ],
+      "id": "7e8d3621-706e-4bf3-b347-52d7ca4c0814",
+      "name": "ASPECTOS DA CENA ONÍRICA"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente, o contexto de vida do mesmo e uma interpretação parcial do sonho advinda de outro especialista (com os 3 príncipios de interpretação), seu trabalho é identificar e dissertar sobre as quatro fontes da psicogênese dos símbolos dos sonhos (realidade social, visualização dos instintos, formalizações semânticas derivadas do externo e pulsões meta-históricas da humanidade) com base no sonho fornecido.\nUtilize o contexto de vida do paciente e a interpretação parcial para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_dream }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".\n\nInterpretação dos 3 princípios de interpretação: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        780,
+        -2300
+      ],
+      "id": "785366ff-9c7a-437e-a871-cada4d12a9c1",
+      "name": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo e 3 interpretações parciais realizadas por outros especialistas, seu trabalho é determinar o critério biológico de todos os símbolos do sonho conforme a ontopsicologia.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('RESUMO DO SONHO (ONTOPSICOLOGIA)').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $('FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS').item.json.response }}\".\n\nInterpretação dos 4 aspectos a serem lidos da cena onírica: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1440,
+        -2300
+      ],
+      "id": "3973ff74-8d29-4709-885a-948611fcec4b",
+      "name": "CRITÉRIO BIOLÓGICO"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá o sonho de um paciente, o contexto de vida do mesmo, uma interpretação sobre o conteúdo latente e a realização do desejo do sonho, seu trabalho é unificar todas essas análises em uma interpretação final do sonho na visão psicanalítica.\nForneça sua resposta em 2 tópicos, \"Interpretação Geral do Sonho\" e \"Conexão com o Paciente\", nesse segundo, você elaborará algumas perguntas de cunho pessoal ao paciente para auxiliar o mesmo a tentar interpretar o próprio sonho, essas perguntas não precisam ser respondidas pelo usuário.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('CONTEÚDO MANIFESTO').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER PSICANALISE').item.json.body.user_context }}\".\n\nConteúdo latente: \"{{ $('CONTEÚDO LATENTE').item.json.response }}\".\n\nRealização do desejo: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        860,
+        -1580
+      ],
+      "id": "6beed1ef-4af4-4a15-8889-95b0d6c17283",
+      "name": "INTERPRETAÇÃO FINAL PSICANÁLISE"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo, 4 interpretações parciais de outros especialistas, seu trabalho é unificar todas essas análises em uma interpretação final do sonho na visão ontopsicológica.\nForneça sua resposta em 2 tópicos, \"Interpretação Geral do Sonho\" e \"Conexão com o Paciente\", nesse segundo, você elaborará algumas perguntas de cunho pessoal ao paciente para auxiliar o mesmo a tentar interpretar o próprio sonho, essas perguntas não precisam ser respondidas pelo usuário.\n\nSonho do paciente: \"{{ $('RESUMO DO SONHO (ONTOPSICOLOGIA)').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $('FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS').item.json.response }}\".\n\nInterpretação dos 4 aspectos a serem lidos da cena onírica: \"{{ $('ASPECTOS DA CENA ONÍRICA').item.json.response }}\".\n\nInterpretação do critério biológico do sonho: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1780,
+        -2300
+      ],
+      "id": "4c4ec7e1-6150-43d5-b70f-e2fae39b8606",
+      "name": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -1320
+      ],
+      "id": "06f2ca37-c1e8-4409-9e6b-6c6e85a90b51",
+      "name": "Google Gemini Chat Model14",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -2060
+      ],
+      "id": "b71e229b-9dc9-4d71-acc6-b97a0715f0f6",
+      "name": "Google Gemini Chat Model20",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você receberá um sonho de um paciente e o detalhamento do sonho, reestruture o sonho como se fosse narrado pelo próprio paciente, unifique o sonho do paciente com o detalhamento do mesmo.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $json.body.user_dream }}\".\n\nDetalhamento do sonho: \"{{ $json.body.dream_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -1580
+      ],
+      "id": "55ab93ea-57d1-47cb-b23f-9ac2fdb288a2",
+      "name": "CONTEÚDO MANIFESTO"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você receberá um sonho de um paciente e o detalhamento do sonho, reestruture o sonho como se fosse narrado pelo próprio paciente formalmente, unifique o sonho do paciente com o detalhamento do mesmo.\nSonho do paciente: {{ $json.body.user_dream }}.\nDetalhamento do sonho: {{ $json.body.dream_context }}.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -2300
+      ],
+      "id": "3ff66484-ea96-4844-938a-7eef142d4b62",
+      "name": "RESUMO DO SONHO (ONTOPSICOLOGIA)"
+    },
+    {
+      "parameters": {
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -2080
+      ],
+      "id": "bae805de-3f2c-4e79-9b9a-8fd9add967a2",
+      "name": "Vector Store Retriever14"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ontopsicologia",
+          "mode": "list",
+          "cachedResultName": "ontopsicologia"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        -1960
+      ],
+      "id": "1f2ebd6c-908f-4333-b581-5ace4babdf89",
+      "name": "Pinecone Vector Store14",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hTRAbEMGwK8RruoL",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -1840
+      ],
+      "id": "8e9a55c0-11ae-459b-9b98-3fafd1de860d",
+      "name": "Embeddings Google Gemini14",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é determinar qual é a hierarquia do sonho conforme a ontopsicologia, escolha uma apenas na qual o sonho se encaixa, utilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\nResponda de maneira breve e objetiva.\n\nSonho do paciente: \"{{ $json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER ONTOPSICOLOGIA').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        140,
+        -2300
+      ],
+      "id": "7eaeef35-0b04-4d2c-8845-15a37d4716e9",
+      "name": "HIERARQUIA DO SONHO"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -2880
+      ],
+      "id": "9893cacf-20f0-4c8f-8292-c07c319ec446",
+      "name": "Google Gemini Chat Model21",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2620,
+        -2880
+      ],
+      "id": "d4baf7be-8ec4-4d47-8065-1d552a3e3926",
+      "name": "Google Gemini Chat Model23",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        -2880
+      ],
+      "id": "0f647a54-c022-493b-92d6-709f57a8900c",
+      "name": "Vector Store Retriever18"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "psychoanalysis",
+          "mode": "list",
+          "cachedResultName": "psychoanalysis"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        2760,
+        -2760
+      ],
+      "id": "b40493a9-fe21-4d61-bf24-445149111ecf",
+      "name": "Pinecone Vector Store18",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hTRAbEMGwK8RruoL",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        -2640
+      ],
+      "id": "79901b12-db0d-4d88-a316-faf4c657842f",
+      "name": "Embeddings Google Gemini18",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é identificar o conteúdo latente do sonho, disserete brevemente sobre a condensação, deslocamento, dramatização e elaboração secundária do relato, listeo-os em tópicos.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('REFINAMENTO DO SONHO').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        2340,
+        -3080
+      ],
+      "id": "84dd758f-1744-4a36-bb81-01b66f6ea872",
+      "name": "CONTEÚDO LATENTE1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá um sonho de um paciente, o contexto de vida do mesmo e uma interpretação parcial de outro psicanalista, seu trabalho é identificar o desejo realizado ou a tentativa de realização do desejo.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação parcial: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        2680,
+        -3080
+      ],
+      "id": "405ae039-3af7-4204-a5fc-a508c1ffe677",
+      "name": "REALIZAÇÃO DO DESEJO1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é identificar e descrever, com base no sonho, os três príncipios de interpretação de sonhos da ontopsicologia, determine e disserte sobre a \"natureza causal do símbolo\", \"efetivação funcional para o sujeiro\" e \"critério semântico\".\nNão utilize tópicos em sua resposta, apenas texto corrido.\nUtilize o contexto de vida do paciente para elaborar sua resposta.\n\nSonho do paciente: \"{{ $('REFINAMENTO DO SONHO').item.json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        600,
+        -3080
+      ],
+      "id": "63355119-2075-4e84-b085-8924707edd59",
+      "name": "PRÍNCIPIOS DE INTERPRETAÇÃO1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo e duas interpretações parciais realizadas por outros especialistas, seu objetivo é determinar e dissertar sobre os quatros aspectos a serem lidos da cena onírica (ação em mutação, ambiente, pessoas ou indivíduos e sentimentos) com base no sonhos fornecido principalmente.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO1').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1280,
+        -3080
+      ],
+      "id": "09e7e702-32a9-48bc-9c81-72b72776a321",
+      "name": "ASPECTOS DA CENA ONÍRICA1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente, o contexto de vida do mesmo e uma interpretação parcial do sonho advinda de outro especialista (com os 3 príncipios de interpretação), seu trabalho é identificar e dissertar sobre as quatro fontes da psicogênese dos símbolos dos sonhos (realidade social, visualização dos instintos, formalizações semânticas derivadas do externo e pulsões meta-históricas da humanidade) com base no sonho fornecido.\nUtilize o contexto de vida do paciente e a interpretação parcial para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação dos 3 princípios de interpretação: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        940,
+        -3080
+      ],
+      "id": "8d55ff71-ffab-4e07-a0b9-b8f4c094167c",
+      "name": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo e 3 interpretações parciais realizadas por outros especialistas, seu trabalho é determinar o critério biológico de todos os símbolos do sonho conforme a ontopsicologia.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO1').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $('FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1').item.json.response }}\".\n\nInterpretação dos 4 aspectos a serem lidos da cena onírica: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1620,
+        -3080
+      ],
+      "id": "e5bec959-618e-495b-88b5-d7054a4aa977",
+      "name": "CRITÉRIO BIOLÓGICO1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise, você receberá o sonho de um paciente, o contexto de vida do mesmo, uma interpretação sobre o conteúdo latente e a realização do desejo do sonho, seu trabalho é unificar todas essas análises em uma interpretação final do sonho na visão psicanalítica.\nForneça sua resposta em 2 tópicos, \"Interpretação Geral do Sonho\" e \"Conexão com o Paciente\", nesse segundo, você elaborará algumas perguntas de cunho pessoal ao paciente para auxiliar o mesmo a tentar interpretar o próprio sonho, essas perguntas não precisam ser respondidas pelo usuário.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nConteúdo latente: \"{{ $('CONTEÚDO LATENTE1').item.json.response }}\".\n\nRealização do desejo: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        3020,
+        -3080
+      ],
+      "id": "fe44cef7-ca05-4457-ac6b-e1877e8bf8b8",
+      "name": "INTERPRETAÇÃO FINAL PSICANÁLISE1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo, 4 interpretações parciais de outros especialistas, seu trabalho é unificar todas essas análises em uma interpretação final do sonho na visão ontopsicológica.\nForneça sua resposta em 2 tópicos, \"Interpretação Geral do Sonho\" e \"Conexão com o Paciente\", nesse segundo, você elaborará algumas perguntas de cunho pessoal ao paciente para auxiliar o mesmo a tentar interpretar o próprio sonho, essas perguntas não precisam ser respondidas pelo usuário.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação dos 3 príncipios de interpretação: \"{{ $('PRÍNCIPIOS DE INTERPRETAÇÃO1').item.json.response }}\".\n\nInterpretação das 4 fontes da psicogênese dos símbolos do sonho: \"{{ $('FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1').item.json.response }}\".\n\nInterpretação dos 4 aspectos a serem lidos da cena onírica: \"{{ $('ASPECTOS DA CENA ONÍRICA1').item.json.response }}\".\n\nInterpretação do critério biológico do sonho: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        1960,
+        -3080
+      ],
+      "id": "7fcafb2b-fcff-419c-b058-524d0de085c8",
+      "name": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -2860
+      ],
+      "id": "b87036dd-a563-4067-8540-8f1997b44d0c",
+      "name": "Google Gemini Chat Model30",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        -2860
+      ],
+      "id": "0ad61f52-f7ba-414f-bf87-6f74662a56ee",
+      "name": "Vector Store Retriever25"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ontopsicologia",
+          "mode": "list",
+          "cachedResultName": "ontopsicologia"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        1380,
+        -2760
+      ],
+      "id": "6b7ceb09-5531-474d-8b54-4e0abee8f1f3",
+      "name": "Pinecone Vector Store25",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hTRAbEMGwK8RruoL",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        -2660
+      ],
+      "id": "01fc1fc3-b8b4-439a-8d72-1774eddb10a5",
+      "name": "Embeddings Google Gemini25",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em ontopsicologia, você receberá um sonho de um paciente e o contexto de vida do mesmo, seu trabalho é determinar qual é a hierarquia do sonho conforme a ontopsicologia, escolha uma apenas na qual o sonho se encaixa, utilize o contexto de vida do paciente para elaborar sua resposta.\nNão utilize tópicos em sua resposta, apenas texto corrido.\nResponda de maneira breve e objetiva.\n\nSonho do paciente: \"{{ $json.output }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        260,
+        -3080
+      ],
+      "id": "38e12e8c-7258-4ef5-a52f-20b212ab05c8",
+      "name": "HIERARQUIA DO SONHO1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        -2940
+      ],
+      "id": "7aa3d819-eebd-4d9e-86de-fa6d7f5b1f87",
+      "name": "Google Gemini Chat Model31",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topK": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        -2940
+      ],
+      "id": "12b61a23-64ee-4abd-b5a6-a3ccf86afb7b",
+      "name": "Vector Store Retriever26"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "ontopsicologia-psicanalise",
+          "mode": "list",
+          "cachedResultName": "ontopsicologia-psicanalise"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        3560,
+        -2820
+      ],
+      "id": "be16174c-d11f-4a78-a837-434fbb92e06c",
+      "name": "Pinecone Vector Store26",
+      "credentials": {
+        "pineconeApi": {
+          "id": "hTRAbEMGwK8RruoL",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3660,
+        -2700
+      ],
+      "id": "89698541-b297-477f-931a-b8045191eb8e",
+      "name": "Embeddings Google Gemini26",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WuA3WmTyX2BXukti",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um especialista em psicanálise e ontopsicologia, você receberá o sonho de um paciente, o contexto de vida do mesmo, uma interpretação psicanalítica e outra interpretação ontopsicológica, seu trabalho é unificar as duas interpretações mesclando seus conhecimentos em psicanálise e ontopsicologia criando uma interpretação com critérios e conceitos mesclados.\nForneça sua resposta em 2 tópicos, \"Interpretação Geral do Sonho\" e \"Conexão com o Paciente\", nesse segundo, você elaborará algumas perguntas de cunho pessoal ao paciente para auxiliar o mesmo a tentar interpretar o próprio sonho, essas perguntas não precisam ser respondidas pelo usuário.\n\nSonho do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_dream }}\".\n\nContexto do paciente: \"{{ $('TRIGGER MESCLADA').item.json.body.user_context }}\".\n\nInterpretação ontopsicológica: \"{{ $('INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1').item.json.response }}\".\n\nInterpretação psicanalítica: \"{{ $json.response }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        3480,
+        -3080
+      ],
+      "id": "e19737e6-2be7-4c8e-94ae-63031098b698",
+      "name": "INTERPRETAÇÃO MESCLADA"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "criteria-psicanalise",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -1580
+      ],
+      "id": "0d312d8c-59f0-4281-ba19-04b610044adb",
+      "name": "TRIGGER PSICANALISE",
+      "webhookId": "fcb5535a-3761-46d3-97b0-73da085ca822"
+    },
+    {
+      "parameters": {
+        "content": "## Resumo e Refinamento do Sonho",
+        "height": 720,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -440,
+        -3220
+      ],
+      "typeVersion": 1,
+      "id": "afb2758f-54a1-4dda-bf0e-3ce1c3109e4d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Interpretação Psicanalítica",
+        "height": 720,
+        "width": 1040,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2280,
+        -3220
+      ],
+      "typeVersion": 1,
+      "id": "d46dc7e4-ead2-42f3-8ef6-c880ccb25ee7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Interpretação Ontopsicológica",
+        "height": 720,
+        "width": 2080,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        200,
+        -3220
+      ],
+      "typeVersion": 1,
+      "id": "cb2fd588-685f-427d-b899-8b62c989abd2",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Interpretação Mesclada",
+        "height": 720,
+        "width": 560,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3320,
+        -3220
+      ],
+      "typeVersion": 1,
+      "id": "2889f038-90cc-4f62-8974-e8623802399f",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "criteria-ontopsicologia",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -2300
+      ],
+      "id": "ae4b84a9-6e5a-4aae-a732-f6466105e9dc",
+      "name": "TRIGGER ONTOPSICOLOGIA",
+      "webhookId": "fcb5535a-3761-46d3-97b0-73da085ca822"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "criteria-mista",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -3080
+      ],
+      "id": "95b4d831-c607-46b8-a36a-e3c8fa812e8e",
+      "name": "TRIGGER MESCLADA",
+      "webhookId": "fcb5535a-3761-46d3-97b0-73da085ca822"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você receberá um sonho de um paciente e o detalhamento do sonho, reestruture o sonho como se fosse narrado pelo próprio paciente, unifique o sonho do paciente com o detalhamento do mesmo.\nNão utilize tópicos em sua resposta, apenas texto corrido.\n\nSonho do paciente: \"{{ $json.body.user_dream }}\".\n\nDetalhamento do sonho: \"{{ $json.body.dream_context }}\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        -3080
+      ],
+      "id": "5d7056cf-b230-44c5-b433-0cc6d8c8a3b4",
+      "name": "REFINAMENTO DO SONHO"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Vector Store Retriever9": {
+      "ai_retriever": [
+        [
+          {
+            "node": "CONTEÚDO LATENTE",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "REALIZAÇÃO DO DESEJO",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store9": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever9",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini9": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store9",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONTEÚDO LATENTE": {
+      "main": [
+        [
+          {
+            "node": "REALIZAÇÃO DO DESEJO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REALIZAÇÃO DO DESEJO": {
+      "main": [
+        [
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PRÍNCIPIOS DE INTERPRETAÇÃO": {
+      "main": [
+        [
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS": {
+      "main": [
+        [
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ASPECTOS DA CENA ONÍRICA": {
+      "main": [
+        [
+          {
+            "node": "CRITÉRIO BIOLÓGICO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRITÉRIO BIOLÓGICO": {
+      "main": [
+        [
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model14": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CONTEÚDO MANIFESTO",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "CONTEÚDO LATENTE",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "REALIZAÇÃO DO DESEJO",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model20": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RESUMO DO SONHO (ONTOPSICOLOGIA)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "HIERARQUIA DO SONHO",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "CRITÉRIO BIOLÓGICO",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONTEÚDO MANIFESTO": {
+      "main": [
+        [
+          {
+            "node": "CONTEÚDO LATENTE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RESUMO DO SONHO (ONTOPSICOLOGIA)": {
+      "main": [
+        [
+          {
+            "node": "HIERARQUIA DO SONHO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever14": {
+      "ai_retriever": [
+        [
+          {
+            "node": "HIERARQUIA DO SONHO",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "CRITÉRIO BIOLÓGICO",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store14": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever14",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini14": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store14",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HIERARQUIA DO SONHO": {
+      "main": [
+        [
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model21": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "REFINAMENTO DO SONHO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model23": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CONTEÚDO LATENTE1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "REALIZAÇÃO DO DESEJO1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever18": {
+      "ai_retriever": [
+        [
+          {
+            "node": "CONTEÚDO LATENTE1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "REALIZAÇÃO DO DESEJO1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE1",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store18": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever18",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini18": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store18",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONTEÚDO LATENTE1": {
+      "main": [
+        [
+          {
+            "node": "REALIZAÇÃO DO DESEJO1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REALIZAÇÃO DO DESEJO1": {
+      "main": [
+        [
+          {
+            "node": "INTERPRETAÇÃO FINAL PSICANÁLISE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PRÍNCIPIOS DE INTERPRETAÇÃO1": {
+      "main": [
+        [
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ASPECTOS DA CENA ONÍRICA1": {
+      "main": [
+        [
+          {
+            "node": "CRITÉRIO BIOLÓGICO1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1": {
+      "main": [
+        [
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRITÉRIO BIOLÓGICO1": {
+      "main": [
+        [
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model30": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "HIERARQUIA DO SONHO1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "CRITÉRIO BIOLÓGICO1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever25": {
+      "ai_retriever": [
+        [
+          {
+            "node": "HIERARQUIA DO SONHO1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "FONTES DA PSICOGÊNESE DOS SÍMBOLOS DOS SONHOS1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "ASPECTOS DA CENA ONÍRICA1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "CRITÉRIO BIOLÓGICO1",
+            "type": "ai_retriever",
+            "index": 0
+          },
+          {
+            "node": "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store25": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever25",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini25": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store25",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HIERARQUIA DO SONHO1": {
+      "main": [
+        [
+          {
+            "node": "PRÍNCIPIOS DE INTERPRETAÇÃO1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model31": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "INTERPRETAÇÃO MESCLADA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever26": {
+      "ai_retriever": [
+        [
+          {
+            "node": "INTERPRETAÇÃO MESCLADA",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store26": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever26",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini26": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store26",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INTERPRETAÇÃO FINAL ONTOPSICOLOGIA1": {
+      "main": [
+        [
+          {
+            "node": "CONTEÚDO LATENTE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INTERPRETAÇÃO FINAL PSICANÁLISE1": {
+      "main": [
+        [
+          {
+            "node": "INTERPRETAÇÃO MESCLADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRIGGER PSICANALISE": {
+      "main": [
+        [
+          {
+            "node": "CONTEÚDO MANIFESTO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRIGGER ONTOPSICOLOGIA": {
+      "main": [
+        [
+          {
+            "node": "RESUMO DO SONHO (ONTOPSICOLOGIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRIGGER MESCLADA": {
+      "main": [
+        [
+          {
+            "node": "REFINAMENTO DO SONHO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REFINAMENTO DO SONHO": {
+      "main": [
+        [
+          {
+            "node": "HIERARQUIA DO SONHO1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "10455b4a-5910-4f0c-8aeb-c91580df5b8f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0257ec617c9a93480829fe443c89b484b1060619468f65f96f37e5056ef1878"
+  },
+  "id": "fCHRdOH07purDZWL",
+  "tags": []
+}
