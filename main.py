@@ -21,11 +21,6 @@ def download_freud():
 def download_psicanalise():
     return download_file("psicanalise.pdf")
 
-# MARCO
-@app.route("/download/marco", methods=["GET"])
-def download_marco():
-    return download_file("marco.pdf")
-
 # ONTOPSICOLOGIA
 @app.route("/download/ontopsicologia", methods=["GET"])
 def download_ontopsicologia():
